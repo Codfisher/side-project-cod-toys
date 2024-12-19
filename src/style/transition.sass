@@ -1,0 +1,33 @@
+// 用於 transition name 的 class 定義
+
+.opacity
+  &-enter-active, &-leave-active
+    transition-duration: 0.4s
+  &-enter-from, &-leave-to
+    opacity: 0 !important
+
+.fade-up-enter-active, .fade-up-leave-active
+  transition-duration: 0.4s
+.fade-up-enter-from, .fade-up-leave-to
+  transform: translateY(10px) !important
+  opacity: 0 !important
+
+.fade-down-enter-active, .fade-down-leave-active
+  transition-duration: 0.4s
+.fade-down-enter-from, .fade-down-leave-to
+  transform: translateY(-10px) !important
+  opacity: 0 !important
+
+.fade-right
+  &-enter-active, &-leave-active
+    transition-duration: 0.4s
+  &-enter-from, &-leave-to
+    transform: translateX(10px) !important
+    opacity: 0 !important
+
+.fade-left
+  &-enter-active, &-leave-active
+    transition-duration: 0.4s
+  &-enter-from, &-leave-to
+    transform: translateX(-10px) !important
+    opacity: 0 !important
