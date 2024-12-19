@@ -7,8 +7,6 @@
     "dev": "vite --host",
     "build": "vue-tsc --noEmit --skipLibCheck && vite build",
     "preview": "vite preview",
-    "app:dev": "tsc && concurrently vite \" electron .\" \"tsc -w\"",
-    "app:build": "npm run vite:build && tsc && electron-builder",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
