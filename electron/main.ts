@@ -13,7 +13,7 @@ function createWindow() {
 
   const display = screen.getPrimaryDisplay()
 
-  mainWindow = new BrowserWindow({
+  const inputWindow = new BrowserWindow({
     width: display.bounds.width / 3,
     height: 100,
     show: true,
@@ -21,15 +21,24 @@ function createWindow() {
     frame: false,
     resizable: false,
   })
-  mainWindow.setMenu(null)
+  inputWindow.setMenu(null)
+
+  // 失去焦點時自動隱藏視窗
+  inputWindow.on('blur', () => {
+    // focusable 設為 false，才可以讓焦點回到原本位置。例如正在輸入的編輯器
+    inputWindow.setFocusable(false)
+    inputWindow.hide()
+  })
 
   if (process.env.VITE_DEV_SERVER_URL) {
-    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
+    inputWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
   }
   else {
     // Load your file
-    mainWindow.loadFile('dist/index.html')
+    inputWindow.loadFile('dist/index.html')
   }
+
+  mainWindow = inputWindow
 }
 
 // This method will be called when Electron has finished
