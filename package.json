@@ -1,6 +1,11 @@
 {
-  "name": "vite-vue3-quasar2",
+  "name": "cod-toys",
   "version": "0.1.0",
+  "author": {
+    "name": "Cod Lin",
+    "url": "https://codlin.me",
+    "email": "hi@codlin.me"
+  },
   "main": "dist-electron/main.js",
   "scripts": {
     "gcp-build": "",

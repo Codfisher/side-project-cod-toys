@@ -1,13 +1,6 @@
 "use strict";
 const process = require("node:process");
 const electron = require("electron");
-process.env.npm_lifecycle_event === "app:dev";
-async function handleFileOpen() {
-  const { canceled, filePaths } = await electron.dialog.showOpenDialog({ title: "Open File" });
-  if (!canceled) {
-    return filePaths[0];
-  }
-}
 function createWindow() {
   const mainWindow = new electron.BrowserWindow({
     width: 800,
@@ -20,7 +13,6 @@ function createWindow() {
   }
 }
 electron.app.whenReady().then(() => {
-  electron.ipcMain.handle("dialog:openFile", handleFileOpen);
   createWindow();
   electron.app.on("activate", () => {
     if (electron.BrowserWindow.getAllWindows().length === 0)

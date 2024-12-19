@@ -6,3 +6,4 @@ coverage
 *.local
 
 /isolate
+/dist-electron
