@@ -2,14 +2,21 @@ import process from 'node:process'
 import {
   app,
   BrowserWindow,
+  globalShortcut,
 } from 'electron'
 
+let mainWindow: BrowserWindow | undefined
+
 function createWindow() {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow?.destroy()
+
+  mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    show: false,
+    backgroundColor: '#fff',
   })
+  mainWindow.setMenu(null)
 
   if (process.env.VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
@@ -31,6 +38,21 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0)
       createWindow()
   })
+
+  const ret = globalShortcut.register('CmdOrCtrl+Space', () => {
+    console.log('CmdOrCtrl+Space is pressed')
+
+    if (!mainWindow?.isVisible()) {
+      mainWindow?.show()
+    }
+    else {
+      mainWindow?.hide()
+    }
+  })
+
+  if (!ret) {
+    console.log('registration failed')
+  }
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -40,4 +62,6 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+
+  globalShortcut.unregisterAll()
 })
