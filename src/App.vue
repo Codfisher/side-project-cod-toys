@@ -64,10 +64,6 @@ import { watchEffect } from 'vue'
 import { version } from '../package.json'
 import MenuNav from './components/menu-nav.vue'
 import { useMainStore } from './stores/main.store'
-import { useUserStore } from './stores/user.store'
-
-const userStore = useUserStore()
-const { isLoading: isUserLoading, user } = storeToRefs(userStore)
 
 const mainStore = useMainStore()
 const { drawerVisible } = storeToRefs(mainStore)

@@ -1,6 +1,5 @@
 <template>
   <q-list
-    :key="userStore.user?.id"
     class="py-5"
   >
     <template
@@ -54,7 +53,6 @@ import { filter, groupBy, isTruthy, map, pipe, values } from 'remeda'
 import { computed } from 'vue'
 import { routes } from 'vue-router/auto-routes'
 import { z } from 'zod'
-import { useUserStore } from '../stores/user.store'
 
 interface MenuItem {
   label: string;
@@ -67,7 +65,6 @@ interface MenuItem {
   }>;
 }
 
-const userStore = useUserStore()
 const $q = useQuasar()
 
 const metaSchema = z.object({
