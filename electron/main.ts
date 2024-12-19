@@ -8,7 +8,7 @@ import {
 
 let mainWindow: BrowserWindow | undefined
 
-function createWindow() {
+async function createInputWindow() {
   mainWindow?.destroy()
 
   const display = screen.getPrimaryDisplay()
@@ -21,36 +21,30 @@ function createWindow() {
     frame: false,
     resizable: false,
   })
+  // 隱藏預設系統選單
   inputWindow.setMenu(null)
 
   // 失去焦點時自動隱藏視窗
   inputWindow.on('blur', () => {
-    // focusable 設為 false，才可以讓焦點回到原本位置。例如正在輸入的編輯器
-    inputWindow.setFocusable(false)
     inputWindow.hide()
   })
 
   if (process.env.VITE_DEV_SERVER_URL) {
-    inputWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
+    await inputWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
   }
   else {
-    // Load your file
-    inputWindow.loadFile('dist/index.html')
+    await inputWindow.loadFile('dist/index.html')
   }
 
   mainWindow = inputWindow
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
-  createWindow()
+app.whenReady().then(async () => {
+  await createInputWindow()
+
   app.on('activate', () => {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0)
-      createWindow()
+      createInputWindow()
   })
 
   const ret = globalShortcut.register('CmdOrCtrl+Space', () => {
@@ -84,9 +78,6 @@ app.whenReady().then(() => {
   }
 })
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
