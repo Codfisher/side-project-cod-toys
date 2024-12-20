@@ -14,7 +14,7 @@ async function createInputWindow() {
   const newWindow = new BrowserWindow({
     width: display.bounds.width / 3,
     height: 100,
-    show: true,
+    show: false,
     backgroundColor: '#fff',
     frame: false,
     resizable: false,
@@ -40,7 +40,7 @@ async function createInputWindow() {
 app.whenReady().then(async () => {
   mainWindow = await createInputWindow()
 
-  const ret = globalShortcut.register('CmdOrCtrl+Space', () => {
+  const ret = globalShortcut.register('Ctrl+Space', () => {
     if (!mainWindow)
       return
 
