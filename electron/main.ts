@@ -9,11 +9,9 @@ import {
 let mainWindow: BrowserWindow | undefined
 
 async function createInputWindow() {
-  mainWindow?.destroy()
-
   const display = screen.getPrimaryDisplay()
 
-  const inputWindow = new BrowserWindow({
+  const newWindow = new BrowserWindow({
     width: display.bounds.width / 3,
     height: 100,
     show: true,
@@ -22,30 +20,25 @@ async function createInputWindow() {
     resizable: false,
   })
   // 隱藏預設系統選單
-  inputWindow.setMenu(null)
+  newWindow.setMenu(null)
 
   // 失去焦點時自動隱藏視窗
-  inputWindow.on('blur', () => {
-    inputWindow.hide()
+  newWindow.on('blur', () => {
+    newWindow.hide()
   })
 
   if (process.env.VITE_DEV_SERVER_URL) {
-    await inputWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
+    await newWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
   }
   else {
-    await inputWindow.loadFile('dist/index.html')
+    await newWindow.loadFile('dist/index.html')
   }
 
-  mainWindow = inputWindow
+  return newWindow
 }
 
 app.whenReady().then(async () => {
-  await createInputWindow()
-
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0)
-      createInputWindow()
-  })
+  mainWindow = await createInputWindow()
 
   const ret = globalShortcut.register('CmdOrCtrl+Space', () => {
     if (!mainWindow)
