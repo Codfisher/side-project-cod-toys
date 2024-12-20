@@ -1,6 +1,3 @@
-# vite-vue3-quasar2-ts
+# cod-toys
 
-基於以下環境與框架：
-- Vite
-- TailwindCSS、UnoCSS
-- Vue 3、Vue Router、Pinia
+啟發於 PowerToys，詳細內容請見：[系列文章](https://codlin.me/column-cod-toys/01-origin.html)
