@@ -32,6 +32,7 @@ async function createInputWindow() {
 
   if (process.env.VITE_DEV_SERVER_URL) {
     await newWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
+    // newWindow.webContents.openDevTools()
   }
   else {
     await newWindow.loadFile('dist/index.html')
@@ -78,7 +79,9 @@ function initIpcMain(mainWindow: BrowserWindow) {
     if (!width)
       return
 
+    mainWindow.setResizable(true)
     mainWindow.setSize(width, height)
+    mainWindow.setResizable(false)
   })
 }
 

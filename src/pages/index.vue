@@ -4,7 +4,7 @@
     class="flex-col"
   >
     <q-input
-      v-model="inputValue"
+      v-model="inputText"
       placeholder="要來點甚麼？...(´,,•ω•,,)"
       autofocus
       outlined
@@ -16,8 +16,8 @@
     </q-input>
 
     <div class="flex-col">
-      <feature-card-ex />
-      <feature-card-kaomoji />
+      <feature-card-kaomoji :input-text />
+      <feature-card-ex :input-text />
     </div>
   </div>
 </template>
@@ -31,7 +31,7 @@ import { useMain } from '../composables/use-main'
 
 const mainApi = useMain()
 
-const inputValue = ref('')
+const inputText = ref('')
 
 const pageRef = ref<HTMLDivElement>()
 const { height } = useElementBounding(pageRef)

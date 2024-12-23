@@ -21,7 +21,7 @@ const emit = defineEmits<{
   'update:modelValue': [value: string];
 }>()
 
-const visible = computed(() => props.inputText.length > 0)
+const visible = computed(() => !props.inputText)
 </script>
 
 <style scoped lang="sass">

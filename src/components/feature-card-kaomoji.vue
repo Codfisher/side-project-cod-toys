@@ -21,7 +21,9 @@ const emit = defineEmits<{
   'update:modelValue': [value: string];
 }>()
 
-const visible = computed(() => props.inputText.startsWith('@'))
+const visible = computed(() => {
+  return !props.inputText || props.inputText.startsWith('@')
+})
 </script>
 
 <style scoped lang="sass">
