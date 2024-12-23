@@ -1,5 +1,8 @@
 <template>
-  <div class="flex-col">
+  <div
+    ref="pageRef"
+    class="flex-col"
+  >
     <q-input
       v-model="inputValue"
       placeholder="要來點甚麼？...(´,,•ω•,,)"
@@ -15,9 +18,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { useElementBounding } from '@vueuse/core'
+import { ref, watchEffect } from 'vue'
+import { useMain } from '../composables/use-main'
+
+const mainApi = useMain()
 
 const inputValue = ref('')
+
+const pageRef = ref<HTMLDivElement>()
+const { height } = useElementBounding(pageRef)
+
+watchEffect(() => {
+  mainApi.updateHeight(height.value)
+})
 </script>
 
 <style scoped lang="sass">
