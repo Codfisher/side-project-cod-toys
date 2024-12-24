@@ -52,6 +52,7 @@ whenever(
 )
 
 const keydownEventMap: Record<
+  /** key name */
   string,
   (event: KeyboardEvent) => Promise<void>
 > = {
