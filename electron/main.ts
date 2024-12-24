@@ -32,7 +32,7 @@ async function createInputWindow() {
 
   if (process.env.VITE_DEV_SERVER_URL) {
     await newWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
-    // newWindow.webContents.openDevTools()
+    newWindow.webContents.openDevTools()
   }
   else {
     await newWindow.loadFile('dist/index.html')
@@ -82,6 +82,11 @@ function initIpcMain(mainWindow: BrowserWindow) {
     mainWindow.setResizable(true)
     mainWindow.setSize(width, height)
     mainWindow.setResizable(false)
+  })
+
+  ipcMain.on('hideWindow', (event) => {
+    mainWindow.setFocusable(false)
+    mainWindow.hide()
   })
 }
 

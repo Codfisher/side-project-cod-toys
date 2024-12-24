@@ -1,43 +1,55 @@
 <template>
   <div v-if="visible">
-    <div
+    <feature-card-option
       v-if="!isFeature"
-      class="border p-4"
-      tabindex="0"
+      class="p-4"
+      :action="() => setText('@')"
     >
       輸入 @ 搜尋顏文字
-    </div>
+    </feature-card-option>
 
     <template v-else>
-      <div tabindex="0" class="border p-4">
-        (´▽`ʃ♡ƪ)
-      </div>
-      <div tabindex="0" class="border p-4">
-        ੭ ˙ᗜ˙ )੭
-      </div>
+      <feature-card-option
+        v-for="text, i in textList"
+        :key="i"
+        class="p-4"
+        :action="() => copy(text)"
+      >
+        {{ text }}
+      </feature-card-option>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useMain } from '../composables/use-main'
+import FeatureCardOption from './feature-card-option.vue'
 
-interface Props {
-  inputText?: string;
-}
-const props = withDefaults(defineProps<Props>(), {
-  inputText: '',
-})
+const mainApi = useMain()
 
-const emit = defineEmits<{
-  'update:modelValue': [value: string];
-}>()
+const inputText = defineModel({ default: '' })
 
 const visible = computed(() => {
-  return !props.inputText || props.inputText.startsWith('@')
+  return !inputText.value || inputText.value.startsWith('@')
 })
 
-const isFeature = computed(() => props.inputText.startsWith('@'))
+const isFeature = computed(() => inputText.value.startsWith('@'))
+
+function setText(text: string) {
+  inputText.value = text
+}
+
+function copy(text: string) {
+  navigator.clipboard.writeText(text)
+  mainApi.hideWindow()
+}
+
+const textList = [
+  '(´▽`ʃ♡ƪ)',
+  '੭ ˙ᗜ˙ )੭',
+  'ヽ(✿ﾟ▽ﾟ)ノ',
+]
 </script>
 
 <style scoped lang="sass">

@@ -1,27 +1,20 @@
 <template>
-  <div
+  <feature-card-option
     v-if="visible"
-    class="border p-4"
+    class="p-4"
   >
     輸入任意文字後隱藏
-  </div>
+  </feature-card-option>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import FeatureCardOption from './feature-card-option.vue'
 
-interface Props {
-  inputText?: string;
-}
-const props = withDefaults(defineProps<Props>(), {
-  inputText: '',
-})
+const inputText = defineModel({ default: '' })
 
-const emit = defineEmits<{
-  'update:modelValue': [value: string];
-}>()
-
-const visible = computed(() => !props.inputText)
+const visible = computed(() => !inputText.value)
+const isFeature = computed(() => false)
 </script>
 
 <style scoped lang="sass">

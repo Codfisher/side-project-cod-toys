@@ -9,6 +9,7 @@
       autofocus
       outlined
       square
+      @keydown="handleKeydown"
     >
       <template #prepend>
         <q-icon name="search" />
@@ -16,8 +17,8 @@
     </q-input>
 
     <div class="flex-col">
-      <feature-card-kaomoji :input-text />
-      <feature-card-ex :input-text />
+      <feature-card-kaomoji v-model="inputText" />
+      <feature-card-ex v-model="inputText" />
     </div>
   </div>
 </template>
@@ -28,11 +29,12 @@ import { ref, watchEffect } from 'vue'
 import FeatureCardEx from '../components/feature-card-ex.vue'
 import FeatureCardKaomoji from '../components/feature-card-kaomoji.vue'
 import { useMain } from '../composables/use-main'
+import { useFeatureStore } from '../stores/feature.store'
 
+const featureStore = useFeatureStore()
 const mainApi = useMain()
 
 const inputText = ref('')
-const selectedOptionId = ref('')
 
 // 同步視窗與頁面高度
 const pageRef = ref<HTMLDivElement>()
@@ -48,6 +50,29 @@ whenever(
   () => !focused.value,
   () => inputText.value = '',
 )
+
+const keydownEventMap: Record<
+  string,
+  (event: KeyboardEvent) => Promise<void>
+> = {
+  async Escape() {
+    inputText.value = ''
+  },
+  async ArrowDown(event) {
+    event.preventDefault()
+    featureStore.nextOption()
+  },
+  async ArrowUp(event) {
+    event.preventDefault()
+    featureStore.prevOption()
+  },
+  async Enter() {
+    featureStore.submitEnter()
+  },
+}
+function handleKeydown(event: KeyboardEvent) {
+  keydownEventMap[event.key]?.(event)
+}
 </script>
 
 <style scoped lang="sass">

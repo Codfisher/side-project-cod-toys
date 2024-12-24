@@ -1,15 +1,21 @@
 <template>
-  <slot />
+  <div
+    class="duration-300"
+    :class="{ 'bg-primary/30': selected }"
+  >
+    <slot />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { computed, useId } from 'vue'
+import { computed, onUnmounted, useId } from 'vue'
+import { useFeatureStore } from '../stores/feature.store'
 
 interface Props {
-  label?: string;
+  action?: () => void;
 }
 const props = withDefaults(defineProps<Props>(), {
-  label: '',
+  action: undefined,
 })
 
 const emit = defineEmits<{
@@ -20,9 +26,24 @@ defineSlots<{
   default?: () => unknown;
 }>()
 
+const featureStore = useFeatureStore()
+
 const id = useId()
 
-const selected = computed(() => false)
+featureStore.addOptionId(id)
+onUnmounted(() => {
+  featureStore.removeOptionId(id)
+})
+
+const selected = computed(() => featureStore.selectedOptionId === id)
+
+featureStore.onEnter(() => {
+  if (!selected.value) {
+    return
+  }
+
+  props.action?.()
+})
 </script>
 
 <style scoped lang="sass">
