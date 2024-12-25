@@ -26,11 +26,6 @@ async function createInputWindow() {
   // 隱藏預設系統選單
   newWindow.setMenu(null)
 
-  // 失去焦點時自動隱藏視窗
-  newWindow.on('blur', () => {
-    newWindow.hide()
-  })
-
   if (process.env.VITE_DEV_SERVER_URL) {
     await newWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
     // newWindow.webContents.openDevTools()

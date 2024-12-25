@@ -41,6 +41,8 @@ whenever(
   () => {
     featureStore.setOption('')
     inputText.value = ''
+
+    mainApi.hideWindow()
   },
 )
 </script>
