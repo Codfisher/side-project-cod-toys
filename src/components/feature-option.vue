@@ -1,7 +1,9 @@
 <template>
   <div
+    ref="optionRef"
     class="flex items-center gap-2 duration-300"
     :class="{ 'bg-primary/30': selected }"
+    @click="props.action()"
   >
     <q-icon
       v-if="props.icon"
@@ -15,7 +17,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onUnmounted, useId } from 'vue'
+import { useElementHover } from '@vueuse/core'
+import { computed, onUnmounted, ref, useId } from 'vue'
 import { useFeatureStore } from '../stores/feature.store'
 
 interface Props {
@@ -42,7 +45,11 @@ onUnmounted(() => {
   featureStore.removeOption(id)
 })
 
-const selected = computed(() => featureStore.selectedOptionId === id)
+const optionRef = ref<HTMLDivElement>()
+const isHover = useElementHover(optionRef)
+const selected = computed(
+  () => isHover.value || featureStore.selectedOptionId === id,
+)
 </script>
 
 <style scoped lang="sass">
