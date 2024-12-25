@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia'
 import { pipe, sortBy } from 'remeda'
-import { computed, ref } from 'vue'
+import { computed, ref, shallowRef, triggerRef } from 'vue'
 
 interface OptionValue {
   action: () => void;
 }
 
 export const useFeatureStore = defineStore('feature', () => {
-  const optionMap = ref(new Map<string, OptionValue>())
+  const optionMap = shallowRef(new Map<string, OptionValue>())
   const optionIdList = computed(() => pipe(
     [...optionMap.value.keys()],
     /** 依照數字排序，保證 option 順序 */
@@ -16,9 +16,11 @@ export const useFeatureStore = defineStore('feature', () => {
 
   function addOption(id: string, value: OptionValue) {
     optionMap.value.set(id, value)
+    triggerRef(optionMap)
   }
   function removeOption(id: string) {
     optionMap.value.delete(id)
+    triggerRef(optionMap)
   }
 
   const selectedOptionId = ref('')
