@@ -15,10 +15,12 @@
 
 <script setup lang="ts">
 import { whenever } from '@vueuse/core'
+import { useMain } from '../composables/use-main'
 import { useFeatureStore } from '../stores/feature.store'
 
 const inputText = defineModel({ default: '' })
 const featureStore = useFeatureStore()
+const mainApi = useMain()
 
 // 當 option 剩一個時，自動選取
 whenever(
@@ -38,6 +40,11 @@ const keydownEventMap: Record<
   (event: KeyboardEvent) => Promise<void>
 > = {
   async Escape() {
+    // 已清空則隱藏視窗
+    if (inputText.value === '') {
+      mainApi.hideWindow()
+    }
+
     inputText.value = ''
   },
   async ArrowDown(event) {
