@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible">
+  <template v-if="visible">
     <feature-option
       v-if="!isFeature"
       class="p-4"
@@ -17,7 +17,7 @@
         :action="() => copy(text)"
       />
     </template>
-  </div>
+  </template>
 </template>
 
 <script setup lang="ts">
@@ -47,7 +47,7 @@ function copy(text: string) {
 const textList = [
   '(´▽`ʃ♡ƪ)',
   '੭ ˙ᗜ˙ )੭',
-  'ヽ(✿ﾟ▽ﾟ)ノ',
+  '(*´∀`)~♥',
 ]
 </script>
 
