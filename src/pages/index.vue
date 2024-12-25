@@ -5,11 +5,18 @@
   >
     <main-input v-model="inputText" />
 
+    <!-- FIX: 解決 option id 順序問題 -->
     <div
       :key="inputText"
       class="flex-col"
     >
-      <feature-card-kaomoji v-model="inputText" />
+      <component
+        :is="card"
+        v-for="card, key in featureCards"
+        :key
+        v-model="inputText"
+      />
+
       <feature-card-google v-model="inputText" />
     </div>
   </div>
@@ -21,8 +28,15 @@ import { ref, watchEffect } from 'vue'
 import MainInput from '../components/main-input.vue'
 import { useMain } from '../composables/use-main'
 import FeatureCardGoogle from '../domains/feature-card-google/index.vue'
-import FeatureCardKaomoji from '../domains/feature-card-kaomoji/index.vue'
 import { useFeatureStore } from '../stores/feature.store'
+
+const featureCards = import.meta.glob([
+  '../domains/feature-card-*/index.vue',
+  '!../domains/feature-card-google/index.vue',
+], {
+  import: 'default',
+  eager: true,
+})
 
 const featureStore = useFeatureStore()
 const mainApi = useMain()
