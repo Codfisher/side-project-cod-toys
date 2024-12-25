@@ -5,11 +5,7 @@
   >
     <main-input v-model="inputText" />
 
-    <!-- FIX: 解決 option id 順序問題 -->
-    <div
-      :key="inputText"
-      class="flex-col"
-    >
+    <div class="flex-col">
       <component
         :is="card"
         v-for="card, key in featureCards"

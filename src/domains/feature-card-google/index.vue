@@ -1,7 +1,8 @@
 <template>
-  <feature-card-option
+  <feature-option
     v-if="visible"
     class="p-4"
+    icon="search"
     text="在 Google 上搜尋"
     :action
   />
@@ -9,7 +10,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import FeatureCardOption from '../../components/feature-card-option.vue'
+import FeatureOption from '../../components/feature-option.vue'
 import { useMain } from '../../composables/use-main'
 
 const mainApi = useMain()

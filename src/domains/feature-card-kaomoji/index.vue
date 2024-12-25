@@ -1,14 +1,15 @@
 <template>
   <div v-if="visible">
-    <feature-card-option
+    <feature-option
       v-if="!isFeature"
       class="p-4"
+      icon="emoticon"
       text="輸入 @ 搜尋顏文字"
       :action="() => setText('@')"
     />
 
     <template v-else>
-      <feature-card-option
+      <feature-option
         v-for="text, i in textList"
         :key="i"
         class="p-4"
@@ -21,7 +22,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import FeatureCardOption from '../../components/feature-card-option.vue'
+import FeatureOption from '../../components/feature-option.vue'
 import { useMain } from '../../composables/use-main'
 
 const mainApi = useMain()

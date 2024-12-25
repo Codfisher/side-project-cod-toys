@@ -1,8 +1,13 @@
 <template>
   <div
-    class="duration-300"
+    class="flex items-center gap-2 duration-300"
     :class="{ 'bg-primary/30': selected }"
   >
+    <q-icon
+      v-if="props.icon"
+      :name="props.icon"
+      size="1.5rem"
+    />
     <slot>
       {{ props.text }}
     </slot>
@@ -14,11 +19,11 @@ import { computed, onUnmounted, useId } from 'vue'
 import { useFeatureStore } from '../stores/feature.store'
 
 interface Props {
+  icon?: string;
   text?: string;
   action?: () => void;
 }
 const props = withDefaults(defineProps<Props>(), {
-  text: '',
   action: undefined,
 })
 
