@@ -53,6 +53,3 @@ whenever(
   },
 )
 </script>
-
-<style scoped lang="sass">
-</style>
