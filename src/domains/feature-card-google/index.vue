@@ -16,7 +16,10 @@ const mainApi = useMain()
 const inputText = defineModel({ default: '' })
 
 function search() {
-  const url = `https://www.google.com/search?q=${encodeURIComponent(inputText.value)}`
+  const url = [
+    `https://www.google.com/search?q=`,
+    encodeURIComponent(inputText.value),
+  ].join('')
   mainApi.openExternal(url)
   mainApi.hideWindow()
 }
