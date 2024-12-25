@@ -35,7 +35,10 @@ whenever(
 )
 
 const keydownEventMap: Record<
-  /** key name */
+  /** key name
+   *
+   * https://developer.mozilla.org/zh-CN/docs/Web/API/UI_Events/Keyboard_event_key_values
+   */
   string,
   (event: KeyboardEvent) => Promise<void>
 > = {
