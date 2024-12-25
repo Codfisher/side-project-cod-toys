@@ -3,20 +3,18 @@
     <feature-card-option
       v-if="!isFeature"
       class="p-4"
+      text="輸入 @ 搜尋顏文字"
       :action="() => setText('@')"
-    >
-      輸入 @ 搜尋顏文字
-    </feature-card-option>
+    />
 
     <template v-else>
       <feature-card-option
         v-for="text, i in textList"
         :key="i"
         class="p-4"
+        :text
         :action="() => copy(text)"
-      >
-        {{ text }}
-      </feature-card-option>
+      />
     </template>
   </div>
 </template>

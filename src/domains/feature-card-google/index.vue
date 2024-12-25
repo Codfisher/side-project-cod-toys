@@ -1,10 +1,9 @@
 <template>
   <feature-card-option
     class="p-4"
+    text="在 Google 上搜尋"
     :action
-  >
-    在 Google 上搜尋
-  </feature-card-option>
+  />
 </template>
 
 <script setup lang="ts">

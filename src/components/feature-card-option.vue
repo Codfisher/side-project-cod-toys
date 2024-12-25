@@ -3,7 +3,9 @@
     class="duration-300"
     :class="{ 'bg-primary/30': selected }"
   >
-    <slot />
+    <slot>
+      {{ props.text }}
+    </slot>
   </div>
 </template>
 
@@ -12,9 +14,11 @@ import { computed, onUnmounted, useId } from 'vue'
 import { useFeatureStore } from '../stores/feature.store'
 
 interface Props {
+  text?: string;
   action?: () => void;
 }
 const props = withDefaults(defineProps<Props>(), {
+  text: '',
   action: undefined,
 })
 

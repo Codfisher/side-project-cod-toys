@@ -5,7 +5,10 @@
   >
     <main-input v-model="inputText" />
 
-    <div class="flex-col">
+    <div
+      :key="inputText"
+      class="flex-col"
+    >
       <feature-card-kaomoji v-model="inputText" />
       <feature-card-google v-model="inputText" />
     </div>
