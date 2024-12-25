@@ -12,8 +12,6 @@
         :key
         v-model="inputText"
       />
-
-      <feature-card-google v-model="inputText" />
     </div>
   </div>
 </template>
@@ -23,13 +21,9 @@ import { useElementBounding, useWindowFocus, whenever } from '@vueuse/core'
 import { ref, watchEffect } from 'vue'
 import MainInput from '../components/main-input.vue'
 import { useMain } from '../composables/use-main'
-import FeatureCardGoogle from '../domains/feature-card-google/index.vue'
 import { useFeatureStore } from '../stores/feature.store'
 
-const featureCards = import.meta.glob([
-  '../domains/feature-card-*/index.vue',
-  '!../domains/feature-card-google/index.vue',
-], {
+const featureCards = import.meta.glob('../domains/feature-card-*/index.vue', {
   import: 'default',
   eager: true,
 })
