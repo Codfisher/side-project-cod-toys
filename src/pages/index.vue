@@ -20,7 +20,7 @@
 import { useElementBounding, useWindowFocus, whenever } from '@vueuse/core'
 import { ref, watchEffect } from 'vue'
 import MainInput from '../components/main-input.vue'
-import { useMain } from '../composables/use-main'
+import { useMainApi } from '../composables/use-main-api'
 import { useFeatureStore } from '../stores/feature.store'
 
 const featureCards = import.meta.glob('../domains/feature-card-*/index.vue', {
@@ -29,7 +29,7 @@ const featureCards = import.meta.glob('../domains/feature-card-*/index.vue', {
 })
 
 const featureStore = useFeatureStore()
-const mainApi = useMain()
+const mainApi = useMainApi()
 
 const inputText = ref('')
 

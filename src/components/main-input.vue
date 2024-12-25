@@ -15,12 +15,12 @@
 
 <script setup lang="ts">
 import { whenever } from '@vueuse/core'
-import { useMain } from '../composables/use-main'
+import { useMainApi } from '../composables/use-main-api'
 import { useFeatureStore } from '../stores/feature.store'
 
 const inputText = defineModel({ default: '' })
 const featureStore = useFeatureStore()
-const mainApi = useMain()
+const mainApi = useMainApi()
 
 // 當 option 剩一個時，自動選取
 whenever(

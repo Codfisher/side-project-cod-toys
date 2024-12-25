@@ -11,9 +11,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import FeatureOption from '../../components/feature-option.vue'
-import { useMain } from '../../composables/use-main'
+import { useMainApi } from '../../composables/use-main-api'
 
-const mainApi = useMain()
+const mainApi = useMainApi()
 
 const inputText = defineModel({ default: '' })
 
