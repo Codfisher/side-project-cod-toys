@@ -6,6 +6,7 @@ import {
   globalShortcut,
   ipcMain,
   screen,
+  shell,
 } from 'electron'
 
 async function createInputWindow() {
@@ -81,6 +82,10 @@ function initIpcMain(mainWindow: BrowserWindow) {
   ipcMain.on('hideWindow', (event) => {
     mainWindow.setFocusable(false)
     mainWindow.hide()
+  })
+
+  ipcMain.on('openExternal', (event, url: string) => {
+    shell.openExternal(url)
   })
 }
 

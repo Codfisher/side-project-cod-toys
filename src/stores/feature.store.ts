@@ -16,6 +16,9 @@ export const useFeatureStore = defineStore('feature', () => {
   }
 
   const selectedOptionId = ref('')
+  function setOption(id: string) {
+    selectedOptionId.value = id
+  }
   function nextOption() {
     const first = optionIdList.value.at(0)
 
@@ -60,6 +63,7 @@ export const useFeatureStore = defineStore('feature', () => {
     removeOptionId,
 
     selectedOptionId,
+    setOption,
     nextOption,
     prevOption,
 

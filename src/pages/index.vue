@@ -3,18 +3,7 @@
     ref="pageRef"
     class="flex-col"
   >
-    <q-input
-      v-model="inputText"
-      placeholder="要來點甚麼？...(´,,•ω•,,)"
-      autofocus
-      outlined
-      square
-      @keydown="handleKeydown"
-    >
-      <template #prepend>
-        <q-icon name="search" />
-      </template>
-    </q-input>
+    <main-input v-model="inputText" />
 
     <div class="flex-col">
       <feature-card-kaomoji v-model="inputText" />
@@ -26,6 +15,7 @@
 <script setup lang="ts">
 import { useElementBounding, useWindowFocus, whenever } from '@vueuse/core'
 import { ref, watchEffect } from 'vue'
+import MainInput from '../components/main-input.vue'
 import { useMain } from '../composables/use-main'
 import FeatureCardGoogle from '../domains/feature-card-google/index.vue'
 import FeatureCardKaomoji from '../domains/feature-card-kaomoji/index.vue'
@@ -48,32 +38,11 @@ watchEffect(() => {
 const focused = useWindowFocus()
 whenever(
   () => !focused.value,
-  () => inputText.value = '',
-)
-
-const keydownEventMap: Record<
-  /** key name */
-  string,
-  (event: KeyboardEvent) => Promise<void>
-> = {
-  async Escape() {
+  () => {
+    featureStore.setOption('')
     inputText.value = ''
   },
-  async ArrowDown(event) {
-    event.preventDefault()
-    featureStore.nextOption()
-  },
-  async ArrowUp(event) {
-    event.preventDefault()
-    featureStore.prevOption()
-  },
-  async Enter() {
-    featureStore.submitEnter()
-  },
-}
-function handleKeydown(event: KeyboardEvent) {
-  keydownEventMap[event.key]?.(event)
-}
+)
 </script>
 
 <style scoped lang="sass">

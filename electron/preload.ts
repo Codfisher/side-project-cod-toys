@@ -7,4 +7,7 @@ contextBridge.exposeInMainWorld('main', {
   hideWindow() {
     return ipcRenderer.send('hideWindow')
   },
+  openExternal(url: string) {
+    return ipcRenderer.send('openExternal', url)
+  },
 })
