@@ -49,7 +49,7 @@ const keydownEventMap: Record<
     featureStore.prevOption()
   },
   async Enter() {
-    featureStore.submitEnter()
+    featureStore.currentOption?.action()
   },
 }
 function handleKeydown(event: KeyboardEvent) {

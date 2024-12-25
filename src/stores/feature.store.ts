@@ -1,18 +1,24 @@
-import { createEventHook } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { pipe, sortBy } from 'remeda'
 import { computed, ref } from 'vue'
 
+interface OptionValue {
+  action: () => void;
+}
+
 export const useFeatureStore = defineStore('feature', () => {
-  const optionIdList = ref<string[]>([])
-  function addOptionId(id: string) {
-    optionIdList.value.push(id)
+  const optionMap = ref(new Map<string, OptionValue>())
+  const optionIdList = computed(() => pipe(
+    [...optionMap.value.keys()],
+    /** 依照數字排序，保證 option 順序 */
+    sortBy((id) => Number.parseInt(id.replace(/\D/g, ''), 10)),
+  ))
+
+  function addOption(id: string, value: OptionValue) {
+    optionMap.value.set(id, value)
   }
-  function removeOptionId(id: string) {
-    const index = optionIdList.value.indexOf(id)
-    if (index !== -1) {
-      optionIdList.value.splice(index, 1)
-    }
+  function removeOption(id: string) {
+    optionMap.value.delete(id)
   }
 
   const selectedOptionId = ref('')
@@ -48,26 +54,18 @@ export const useFeatureStore = defineStore('feature', () => {
     }
   }
 
-  const enterHook = createEventHook<{ optionId: string }>()
-  function submitEnter() {
-    enterHook.trigger({ optionId: selectedOptionId.value })
-  }
+  const currentOption = computed(() => optionMap.value.get(selectedOptionId.value))
 
   return {
-    optionIdList: computed(() => pipe(
-      optionIdList.value,
-      /** 依照數字排序，保證 option 順序 */
-      sortBy((id) => Number.parseInt(id.replace(/\D/g, ''), 10)),
-    )),
-    addOptionId,
-    removeOptionId,
+    optionIdList,
+    addOption,
+    removeOption,
 
     selectedOptionId,
     setOption,
     nextOption,
     prevOption,
 
-    submitEnter,
-    onEnter: enterHook.on,
+    currentOption,
   }
 })

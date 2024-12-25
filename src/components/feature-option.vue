@@ -24,12 +24,8 @@ interface Props {
   action?: () => void;
 }
 const props = withDefaults(defineProps<Props>(), {
-  action: undefined,
+  action: () => () => { },
 })
-
-const emit = defineEmits<{
-  'update:modelValue': [value: string];
-}>()
 
 defineSlots<{
   default?: () => unknown;
@@ -39,20 +35,14 @@ const featureStore = useFeatureStore()
 
 const id = useId()
 
-featureStore.addOptionId(id)
+featureStore.addOption(id, {
+  action: props.action,
+})
 onUnmounted(() => {
-  featureStore.removeOptionId(id)
+  featureStore.removeOption(id)
 })
 
 const selected = computed(() => featureStore.selectedOptionId === id)
-
-featureStore.onEnter(() => {
-  if (!selected.value) {
-    return
-  }
-
-  props.action?.()
-})
 </script>
 
 <style scoped lang="sass">
