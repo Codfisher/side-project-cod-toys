@@ -18,7 +18,7 @@
 
     <div class="flex-col">
       <feature-card-kaomoji v-model="inputText" />
-      <feature-card-ex v-model="inputText" />
+      <feature-card-google v-model="inputText" />
     </div>
   </div>
 </template>
@@ -26,9 +26,9 @@
 <script setup lang="ts">
 import { useElementBounding, useWindowFocus, whenever } from '@vueuse/core'
 import { ref, watchEffect } from 'vue'
-import FeatureCardEx from '../components/feature-card-ex.vue'
-import FeatureCardKaomoji from '../components/feature-card-kaomoji.vue'
 import { useMain } from '../composables/use-main'
+import FeatureCardGoogle from '../domains/feature-card-google/index.vue'
+import FeatureCardKaomoji from '../domains/feature-card-kaomoji/index.vue'
 import { useFeatureStore } from '../stores/feature.store'
 
 const featureStore = useFeatureStore()
