@@ -1,7 +1,7 @@
 <template>
   <feature-card-option
     class="p-4"
-    :action="search"
+    :action
   >
     在 Google 上搜尋
   </feature-card-option>
@@ -15,7 +15,7 @@ const mainApi = useMain()
 
 const inputText = defineModel({ default: '' })
 
-function search() {
+function action() {
   const url = [
     `https://www.google.com/search?q=`,
     encodeURIComponent(inputText.value),
