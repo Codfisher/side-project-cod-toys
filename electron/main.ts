@@ -163,9 +163,7 @@ function initTray() {
       submenu: [
         {
           label: '開啟設定視窗',
-          click: async () => {
-            createConfigWindow('/kaomoji-config/')
-          },
+          click: () => createConfigWindow('/kaomoji-config/'),
         },
       ],
     },
