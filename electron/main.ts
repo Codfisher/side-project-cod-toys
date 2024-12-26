@@ -15,6 +15,8 @@ import {
 import Store from 'electron-store'
 import { version } from '../package.json'
 
+type ConfigStore = Store<{ config: Config }>
+
 async function createInputWindow() {
   const display = screen.getPrimaryDisplay()
 
@@ -68,7 +70,13 @@ async function createConfigWindow(route: keyof RouteNamedMap) {
   return newWindow
 }
 
-function initGlobalShortcut(mainWindow: BrowserWindow) {
+function initGlobalShortcut(
+  {
+    mainWindow,
+  }: {
+    mainWindow: BrowserWindow;
+  },
+) {
   const ret = globalShortcut.register('Ctrl+Space', () => {
     if (mainWindow?.isVisible()) {
       // focusable 設為 false，才可以讓焦點回到原本位置。例如正在輸入的編輯器
@@ -102,20 +110,22 @@ function initGlobalShortcut(mainWindow: BrowserWindow) {
 
 function initIpcMain(
   {
-    mainWindow,
     configStore,
   }: {
-    mainWindow: BrowserWindow;
-    configStore: Store<{ config: Config }>;
+    configStore: ConfigStore;
   },
 ) {
   // main
   ipcMain.on('main:updateHeight', (event, height: number) => {
-    mainWindow.setBounds({ height })
+    const window = BrowserWindow.fromWebContents(event.sender)
+
+    window?.setBounds({ height })
   })
   ipcMain.on('main:hideWindow', (event) => {
-    mainWindow.setFocusable(false)
-    mainWindow.hide()
+    const window = BrowserWindow.fromWebContents(event.sender)
+
+    window?.setFocusable(false)
+    window?.hide()
   })
   ipcMain.on('main:openExternal', (event, url: string) => {
     shell.openExternal(url)
@@ -139,7 +149,7 @@ function initIpcMain(
   })
 }
 
-function initConfigStore() {
+function createConfigStore(): ConfigStore {
   const config: Config = {
     kaomoji: {
       url: '',
@@ -153,7 +163,7 @@ function initConfigStore() {
   })
 }
 
-function initTray(
+function createTray(
   {
     mainWindow,
   }: {
@@ -172,7 +182,7 @@ function initTray(
           globalShortcut.unregisterAll()
         }
         else {
-          initGlobalShortcut(mainWindow)
+          initGlobalShortcut({ mainWindow })
         }
       },
     },
@@ -204,16 +214,13 @@ function initTray(
 app.whenReady().then(async () => {
   const mainWindow = await createInputWindow()
 
-  const configStore = initConfigStore()
+  const configStore = createConfigStore()
 
-  initGlobalShortcut(mainWindow)
+  initGlobalShortcut({ mainWindow })
 
-  initIpcMain({
-    mainWindow,
-    configStore,
-  })
+  initIpcMain({ configStore })
 
-  const tray = initTray({ mainWindow })
+  const tray = createTray({ mainWindow })
 
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
