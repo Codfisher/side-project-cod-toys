@@ -1,3 +1,4 @@
+import type { Config } from './electron-env'
 import path from 'node:path'
 import process from 'node:process'
 import {
@@ -8,6 +9,7 @@ import {
   screen,
   shell,
 } from 'electron'
+import Store from 'electron-store'
 
 async function createInputWindow() {
   const display = screen.getPrimaryDisplay()
@@ -69,26 +71,61 @@ function initGlobalShortcut(mainWindow: BrowserWindow) {
   }
 }
 
-function initIpcMain(mainWindow: BrowserWindow) {
-  ipcMain.on('updateHeight', (event, height: number) => {
+function initIpcMain({
+  mainWindow,
+  configStore,
+}: {
+  mainWindow: BrowserWindow;
+  configStore: Store<{ config: Config }>;
+}) {
+  // main
+  ipcMain.on('main:updateHeight', (event, height: number) => {
     mainWindow.setBounds({ height })
   })
-
-  ipcMain.on('hideWindow', (event) => {
+  ipcMain.on('main:hideWindow', (event) => {
     mainWindow.setFocusable(false)
     mainWindow.hide()
   })
-
-  ipcMain.on('openExternal', (event, url: string) => {
+  ipcMain.on('main:openExternal', (event, url: string) => {
     shell.openExternal(url)
+  })
+
+  // config
+  ipcMain.handle('config:get', async () => {
+    return configStore.get('config')
+  })
+  ipcMain.handle('config:update', async (event, config) => {
+    const data = configStore.get('config')
+    configStore.set('config', {
+      ...data,
+      ...config,
+    })
+  })
+  ipcMain.on('config:onUpdate', (event, callback) => {
+    configStore.onDidChange('config', callback)
   })
 }
 
 app.whenReady().then(async () => {
   const mainWindow = await createInputWindow()
 
+  const configStore = new Store({
+    name: 'config',
+    defaults: {
+      config: {
+        kaomoji: {
+          url: '',
+          token: '',
+        },
+      },
+    },
+  })
+
   initGlobalShortcut(mainWindow)
-  initIpcMain(mainWindow)
+  initIpcMain({
+    mainWindow,
+    configStore,
+  })
 })
 
 app.on('window-all-closed', () => {
