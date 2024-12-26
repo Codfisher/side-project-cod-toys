@@ -1,3 +1,4 @@
+import type { RouteNamedMap } from 'vue-router/auto-routes'
 import type { Config } from './electron-env'
 import path from 'node:path'
 import process from 'node:process'
@@ -37,6 +38,31 @@ async function createInputWindow() {
   }
   else {
     await newWindow.loadFile('dist/index.html')
+  }
+
+  return newWindow
+}
+
+async function createConfigWindow(route: keyof RouteNamedMap) {
+  const newWindow = new BrowserWindow({
+    backgroundColor: '#fff',
+    webPreferences: {
+      preload: path.join(__dirname, './preload.js'),
+    },
+  })
+  // 隱藏預設系統選單
+  newWindow.setMenu(null)
+
+  if (process.env.VITE_DEV_SERVER_URL) {
+    await newWindow.loadURL(
+      `${process.env.VITE_DEV_SERVER_URL}#${route}`,
+    )
+    // newWindow.webContents.openDevTools()
+  }
+  else {
+    await newWindow.loadFile('dist/index.html', {
+      hash: route,
+    })
   }
 
   return newWindow
@@ -137,7 +163,9 @@ function initTray() {
       submenu: [
         {
           label: '開啟設定視窗',
-          click: () => { },
+          click: async () => {
+            createConfigWindow('/kaomoji-config/')
+          },
         },
       ],
     },
