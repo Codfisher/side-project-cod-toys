@@ -153,11 +153,29 @@ function initConfigStore() {
   })
 }
 
-function initTray() {
+function initTray(
+  {
+    mainWindow,
+  }: {
+    mainWindow: BrowserWindow;
+  },
+) {
   const tray = new Tray(
     path.join(__dirname, '../public/fish.ico'),
   )
   const contextMenu = Menu.buildFromTemplate([
+    {
+      label: '暫時停用',
+      type: 'checkbox',
+      click(item) {
+        if (item.checked) {
+          globalShortcut.unregisterAll()
+        }
+        else {
+          initGlobalShortcut(mainWindow)
+        }
+      },
+    },
     {
       label: '詳細設定',
       submenu: [
@@ -166,6 +184,10 @@ function initTray() {
           click: () => createConfigWindow('/kaomoji-config/'),
         },
       ],
+    },
+    {
+      label: '關於',
+      click: () => shell.openExternal('https://codlin.me/column-cod-toys/01-origin.html'),
     },
     { type: 'separator' },
     {
@@ -191,7 +213,7 @@ app.whenReady().then(async () => {
     configStore,
   })
 
-  const tray = initTray()
+  const tray = initTray({ mainWindow })
 
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
