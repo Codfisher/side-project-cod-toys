@@ -22,7 +22,6 @@ contextBridge.exposeInMainWorld('config', {
   },
   onUpdate(callback: (config: Config) => void) {
     ipcRenderer.on('config:onUpdate', (event, config) => {
-      console.log(`🚀 ~ ipcRenderer.on 'config:onUpdate':`)
       callback(config)
     })
   },

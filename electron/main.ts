@@ -6,10 +6,13 @@ import {
   BrowserWindow,
   globalShortcut,
   ipcMain,
+  Menu,
   screen,
   shell,
+  Tray,
 } from 'electron'
 import Store from 'electron-store'
+import { version } from '../package.json'
 
 async function createInputWindow() {
   const display = screen.getPrimaryDisplay()
@@ -71,13 +74,15 @@ function initGlobalShortcut(mainWindow: BrowserWindow) {
   }
 }
 
-function initIpcMain({
-  mainWindow,
-  configStore,
-}: {
-  mainWindow: BrowserWindow;
-  configStore: Store<{ config: Config }>;
-}) {
+function initIpcMain(
+  {
+    mainWindow,
+    configStore,
+  }: {
+    mainWindow: BrowserWindow;
+    configStore: Store<{ config: Config }>;
+  },
+) {
   // main
   ipcMain.on('main:updateHeight', (event, height: number) => {
     mainWindow.setBounds({ height })
@@ -108,32 +113,66 @@ function initIpcMain({
   })
 }
 
+function initConfigStore() {
+  const config: Config = {
+    kaomoji: {
+      url: '',
+      token: '',
+    },
+  }
+
+  return new Store({
+    name: 'config',
+    defaults: { config },
+  })
+}
+
+function initTray() {
+  const tray = new Tray(
+    path.join(__dirname, '../public/fish.ico'),
+  )
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: '詳細設定',
+      submenu: [
+        {
+          label: '開啟設定視窗',
+          click: () => { },
+        },
+      ],
+    },
+    { type: 'separator' },
+    {
+      label: '退出應用程式',
+      click: () => app.quit(),
+    },
+  ])
+  tray.setToolTip(`CodToys v${version}`)
+  tray.setContextMenu(contextMenu)
+
+  return tray
+}
+
 app.whenReady().then(async () => {
   const mainWindow = await createInputWindow()
 
-  const configStore = new Store({
-    name: 'config',
-    defaults: {
-      config: {
-        kaomoji: {
-          url: '',
-          token: '',
-        },
-      },
-    },
-  })
+  const configStore = initConfigStore()
 
   initGlobalShortcut(mainWindow)
+
   initIpcMain({
     mainWindow,
     configStore,
   })
-})
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  const tray = initTray()
 
-  globalShortcut.unregisterAll()
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit()
+    }
+
+    globalShortcut.unregisterAll()
+    tray.destroy()
+  })
 })
