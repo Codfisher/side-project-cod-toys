@@ -18,6 +18,9 @@
     "blueprint": "vite-node scripts/create-blueprint.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.(ts|vue)\" --fix"
   },
+  "dependencies": {
+    "electron-store": "^10.0.0"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "3.7.3",
     "@intlify/unplugin-vue-i18n": "^5.2.0",
