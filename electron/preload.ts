@@ -1,4 +1,4 @@
-import type { Config } from './electron-env'
+import type { UserConfig } from './electron-env'
 import { contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld('main', {
@@ -17,10 +17,10 @@ contextBridge.exposeInMainWorld('config', {
   get() {
     return ipcRenderer.invoke('config:get')
   },
-  update(data: Partial<Config>) {
+  update(data: Partial<UserConfig>) {
     return ipcRenderer.invoke('config:update', data)
   },
-  onUpdate(callback: (config: Config) => void) {
+  onUpdate(callback: (config: UserConfig) => void) {
     ipcRenderer.on('config:onUpdate', (event, config) => {
       callback(config)
     })

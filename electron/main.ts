@@ -1,5 +1,5 @@
 import type { RouteNamedMap } from 'vue-router/auto-routes'
-import type { Config } from './electron-env'
+import type { UserConfig } from './electron-env'
 import path from 'node:path'
 import process from 'node:process'
 import {
@@ -15,7 +15,7 @@ import {
 import Store from 'electron-store'
 import { version } from '../package.json'
 
-type ConfigStore = Store<{ config: Config }>
+type ConfigStore = Store<{ config: UserConfig }>
 
 async function createInputWindow() {
   const display = screen.getPrimaryDisplay()
@@ -150,9 +150,9 @@ function initIpcMain(
 }
 
 function createConfigStore(): ConfigStore {
-  const config: Config = {
+  const config: UserConfig = {
     kaomoji: {
-      url: '',
+      databaseId: '',
       token: '',
     },
   }

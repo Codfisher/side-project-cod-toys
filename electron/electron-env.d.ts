@@ -4,16 +4,16 @@ export interface MainApi {
   openExternal: (url: string) => void;
 }
 
-export interface Config {
+export interface UserConfig {
   kaomoji: {
-    url: string;
+    databaseId: string;
     token: string;
   };
 }
 export interface ConfigApi {
-  get: () => Promise<Config>;
-  update: (data: Partial<Config>) => Promise<void>;
-  onUpdate: (callback: (config: Config) => void) => void;
+  get: () => Promise<UserConfig>;
+  update: (data: Partial<UserConfig>) => Promise<void>;
+  onUpdate: (callback: (config: UserConfig) => void) => void;
 }
 
 declare global {
