@@ -100,9 +100,11 @@ function initIpcMain({
       ...data,
       ...config,
     })
-  })
-  ipcMain.on('config:onUpdate', (event, callback) => {
-    configStore.onDidChange('config', callback)
+
+    // 向所有視窗觸發 config:onUpdate 事件
+    BrowserWindow.getAllWindows().forEach((window) => {
+      window.webContents.send('config:onUpdate', config)
+    })
   })
 }
 

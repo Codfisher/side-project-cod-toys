@@ -58,16 +58,14 @@ const textList = [
 const {
   state: config,
   isLoading: isConfigLoading,
+  execute: refreshConfig,
 } = useAsyncState(
   () => configApi.get(),
   undefined,
 )
 
-configApi.onUpdate((config) => {
-  $q.notify({
-    message: `設定已更新 : ${config}`,
-    type: 'positive',
-  })
+configApi.onUpdate(() => {
+  refreshConfig()
 })
 </script>
 
