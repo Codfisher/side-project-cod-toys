@@ -226,17 +226,16 @@ async function nextPage() {
 }
 
 configApi.onUpdate(async (config) => {
-  initNotionClient(config)
-  refreshData()
+  init(config)
 })
 
-async function init() {
-  const config = await refreshConfig()
-  if (!config) {
+async function init(config?: UserConfig) {
+  const _config = config ?? await refreshConfig()
+  if (!_config) {
     return
   }
 
-  initNotionClient(config)
+  initNotionClient(_config)
   refreshData()
 }
 init()
