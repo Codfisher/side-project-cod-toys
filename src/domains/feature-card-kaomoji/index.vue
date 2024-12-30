@@ -69,7 +69,7 @@ import { useAsyncState } from '@vueuse/core'
 import dayjs from 'dayjs'
 import Fuse from 'fuse.js'
 import { get } from 'lodash-es'
-import { chunk, map, pipe, prop } from 'remeda'
+import { chunk, map, pipe, prop, reduce } from 'remeda'
 import { computed, nextTick, ref, shallowRef, triggerRef, watch } from 'vue'
 import FeatureOption from '../../components/feature-option.vue'
 import { useConfigApi } from '../../composables/use-config-api'
@@ -158,8 +158,9 @@ interface ListItem {
   value: string;
   tags: string[];
 }
-const list = computed(() => {
-  return notionData.value?.reduce((acc: ListItem[], result) => {
+const list = computed(() => pipe(
+  notionData.value,
+  reduce((acc: ListItem[], result) => {
     acc.push({
       // @notionhq/client 的型別與實際資料有點出入，自行從回應判斷
       value: get(result, 'properties.value.title[0].plain_text', '') as string,
@@ -176,8 +177,8 @@ const list = computed(() => {
     })
 
     return acc
-  }, [])
-})
+  }, []),
+))
 
 const fuseInstance = new Fuse(list.value, {
   keys: ['tags'],
