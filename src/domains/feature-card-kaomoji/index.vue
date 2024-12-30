@@ -10,9 +10,19 @@
 
     <template v-else>
       <feature-option
-        v-for="item, i in filteredList"
+        v-if="nextPageVisible"
+        class="w-full px-4 py-2"
+        :action="() => nextPage()"
+      >
+        <span class="flex-1">
+          下一頁 ({{ pagination.page + 1 }}/{{ totalPages }})
+        </span>
+      </feature-option>
+
+      <feature-option
+        v-for="item, i in paginationList"
         :key="i"
-        class="w-full p-4"
+        class="w-full px-4 py-2"
         :action="() => copy(item.value)"
       >
         <div class="flex-1">
@@ -54,7 +64,7 @@ import { useAsyncState } from '@vueuse/core'
 import dayjs from 'dayjs'
 import Fuse from 'fuse.js'
 import { get } from 'lodash-es'
-import { map, pipe, prop, take } from 'remeda'
+import { chunk, map, pipe, prop } from 'remeda'
 import { computed, ref, shallowRef, triggerRef, watch } from 'vue'
 import FeatureOption from '../../components/feature-option.vue'
 import { useConfigApi } from '../../composables/use-config-api'
@@ -95,7 +105,7 @@ function initNotionClient(config: UserConfig) {
   })
 }
 
-const updatedAt = ref(dayjs())
+const updatedAt = shallowRef(dayjs())
 const notionData = shallowRef<any[]>([])
 const startCursor = ref('')
 const {
@@ -176,20 +186,34 @@ watch(list, (value) => {
 
 const filteredList = computed(() => {
   if (inputText.value === '@') {
-    return pipe(
-      list.value,
-      take(5),
-    )
+    return list.value
   }
 
   const result = fuseInstance.search(inputText.value)
 
   return pipe(
     result,
-    take(5),
     map(prop('item')),
   )
 })
+
+const pagination = ref({
+  page: 0,
+  itemsPerPage: 5,
+})
+const totalPages = computed(() => Math.ceil(filteredList.value.length / pagination.value.itemsPerPage))
+
+const paginationList = computed(() => pipe(
+  filteredList.value,
+  chunk(pagination.value.itemsPerPage),
+  (data) => data[pagination.value.page] ?? [],
+))
+
+const nextPageVisible = computed(() => totalPages.value > 1)
+function nextPage() {
+  pagination.value.page += 1
+  pagination.value.page %= totalPages.value
+}
 
 configApi.onUpdate(async (config) => {
   initNotionClient(config)
