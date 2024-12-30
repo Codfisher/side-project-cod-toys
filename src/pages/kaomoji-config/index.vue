@@ -1,6 +1,6 @@
 <template>
   <q-form
-    class="flex-col gap-6 p-6"
+    class="relative flex-col gap-6 p-6"
     @submit="handleSubmit"
   >
     <q-input
@@ -21,6 +21,8 @@
       unelevated
       color="primary"
     />
+
+    <q-inner-loading :showing="isLoading" />
   </q-form>
 </template>
 
@@ -41,9 +43,7 @@ const form = ref<UserConfig['kaomoji']>({
 })
 
 const {
-  state: config,
-  isLoading: isConfigLoading,
-  execute: refreshConfig,
+  isLoading,
 } = useAsyncState(
   () => configApi.get(),
   undefined,
