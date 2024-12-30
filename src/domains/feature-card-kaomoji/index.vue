@@ -161,7 +161,7 @@ interface ListItem {
 const list = computed(() => {
   return notionData.value?.reduce((acc: ListItem[], result) => {
     acc.push({
-      // @notionhq/client 的型別有點出入，自行從回應中取值
+      // @notionhq/client 的型別與實際資料有點出入，自行從回應判斷
       value: get(result, 'properties.value.title[0].plain_text', '') as string,
       tags: pipe(
         get(result, 'properties.tags.multi_select', []) as { name: string }[],
