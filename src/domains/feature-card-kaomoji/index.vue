@@ -54,7 +54,7 @@ import { useAsyncState } from '@vueuse/core'
 import dayjs from 'dayjs'
 import Fuse from 'fuse.js'
 import { get } from 'lodash-es'
-import { map, pipe, prop, shuffle, take } from 'remeda'
+import { map, pipe, prop, take } from 'remeda'
 import { computed, ref, shallowRef, triggerRef, watch } from 'vue'
 import FeatureOption from '../../components/feature-option.vue'
 import { useConfigApi } from '../../composables/use-config-api'
@@ -162,13 +162,12 @@ const list = computed(() => {
   }, [])
 })
 
-let fuseInstance: Fuse<ListItem> | undefined
-function initFuseInstance() {
-  fuseInstance = new Fuse(list.value, {
-    keys: ['tags'],
-  })
-}
-watch(notionData, initFuseInstance)
+const fuseInstance = new Fuse(list.value, {
+  keys: ['tags'],
+})
+watch(list, (value) => {
+  fuseInstance.setCollection(value)
+})
 
 // const filteredList = computed(() => pipe(
 //   list.value,
@@ -176,16 +175,14 @@ watch(notionData, initFuseInstance)
 // ))
 
 const filteredList = computed(() => {
-  if (!fuseInstance || inputText.value.trim() === '@') {
+  if (inputText.value === '@') {
     return pipe(
       list.value,
-      shuffle(),
       take(5),
     )
   }
 
   const result = fuseInstance.search(inputText.value)
-  console.log(`🚀 ~ result:`, result)
 
   return pipe(
     result,
