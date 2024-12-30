@@ -53,3 +53,12 @@ whenever(
   },
 )
 </script>
+
+<style lang="sass">
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&family=Orbitron:wght@400..900&family=Oxanium:wght@200..800&display=swap')
+
+html, body
+  font-family: "Noto Sans TC", serif
+  font-optical-sizing: auto
+  font-style: normal
+</style>

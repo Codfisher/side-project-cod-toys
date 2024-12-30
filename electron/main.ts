@@ -28,6 +28,7 @@ async function createInputWindow() {
     frame: false,
     resizable: false,
     webPreferences: {
+      webSecurity: false,
       preload: path.join(__dirname, './preload.js'),
     },
   })
@@ -36,7 +37,7 @@ async function createInputWindow() {
 
   if (process.env.VITE_DEV_SERVER_URL) {
     await newWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
-    // newWindow.webContents.openDevTools()
+    newWindow.webContents.openDevTools()
   }
   else {
     await newWindow.loadFile('dist/index.html')

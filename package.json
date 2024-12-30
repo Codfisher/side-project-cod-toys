@@ -19,6 +19,7 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.(ts|vue)\" --fix"
   },
   "dependencies": {
+    "@notionhq/client": "^2.2.15",
     "electron-store": "^10.0.0"
   },
   "devDependencies": {
