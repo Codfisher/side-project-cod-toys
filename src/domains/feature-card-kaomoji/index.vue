@@ -52,24 +52,22 @@ import type { UserConfig } from '../../../electron/electron-env'
 import { Client } from '@notionhq/client'
 import { useAsyncState } from '@vueuse/core'
 import dayjs from 'dayjs'
+import Fuse from 'fuse.js'
 import { get } from 'lodash-es'
-import { useQuasar } from 'quasar'
-import { pipe, take } from 'remeda'
-import { computed, ref, shallowRef, triggerRef } from 'vue'
+import { map, pipe, prop, shuffle, take } from 'remeda'
+import { computed, ref, shallowRef, triggerRef, watch } from 'vue'
 import FeatureOption from '../../components/feature-option.vue'
 import { useConfigApi } from '../../composables/use-config-api'
 import { useMainApi } from '../../composables/use-main-api'
 
 const mainApi = useMainApi()
 const configApi = useConfigApi()
-const $q = useQuasar()
 
 const inputText = defineModel({ default: '' })
 
 const visible = computed(() => {
   return !inputText.value || inputText.value.startsWith('@')
 })
-
 const isFeature = computed(() => inputText.value.startsWith('@'))
 
 function setText(text: string) {
@@ -87,14 +85,7 @@ const {
 } = useAsyncState(
   () => configApi.get(),
   undefined,
-  {
-    immediate: false,
-    onSuccess(data) {
-      if (data) {
-        initNotionClient(data)
-      }
-    },
-  },
+  { immediate: false },
 )
 
 let notionClient: Client | undefined
@@ -105,7 +96,7 @@ function initNotionClient(config: UserConfig) {
 }
 
 const updatedAt = ref(dayjs())
-const data = shallowRef<any[]>([])
+const notionData = shallowRef<any[]>([])
 const startCursor = ref('')
 const {
   isLoading: isDataLoading,
@@ -124,10 +115,9 @@ const {
   },
   undefined,
   {
-    resetOnExecute: false,
     immediate: false,
     onSuccess(result) {
-      data.value.push(...(result?.results ?? []))
+      notionData.value.push(...(result?.results ?? []))
 
       if (result?.has_more && result.next_cursor) {
         startCursor.value = result.next_cursor
@@ -135,7 +125,7 @@ const {
         return
       }
 
-      triggerRef(data)
+      triggerRef(notionData)
       updatedAt.value = dayjs()
     },
   },
@@ -143,7 +133,7 @@ const {
 
 function refreshData() {
   startCursor.value = ''
-  data.value = []
+  notionData.value = []
   getData()
 }
 
@@ -152,7 +142,7 @@ interface ListItem {
   tags: string[];
 }
 const list = computed(() => {
-  return data.value?.reduce((acc: ListItem[], result) => {
+  return notionData.value?.reduce((acc: ListItem[], result) => {
     acc.push({
       // @notionhq/client 的型別有點出入，自行從回應中取值
       value: get(result, 'properties.value.title[0].plain_text', '') as string,
@@ -172,10 +162,37 @@ const list = computed(() => {
   }, [])
 })
 
-const filteredList = computed(() => pipe(
-  list.value,
-  take(5),
-))
+let fuseInstance: Fuse<ListItem> | undefined
+function initFuseInstance() {
+  fuseInstance = new Fuse(list.value, {
+    keys: ['tags'],
+  })
+}
+watch(notionData, initFuseInstance)
+
+// const filteredList = computed(() => pipe(
+//   list.value,
+//   take(5),
+// ))
+
+const filteredList = computed(() => {
+  if (!fuseInstance || inputText.value.trim() === '@') {
+    return pipe(
+      list.value,
+      shuffle(),
+      take(5),
+    )
+  }
+
+  const result = fuseInstance.search(inputText.value)
+  console.log(`🚀 ~ result:`, result)
+
+  return pipe(
+    result,
+    take(5),
+    map(prop('item')),
+  )
+})
 
 configApi.onUpdate(async (config) => {
   initNotionClient(config)

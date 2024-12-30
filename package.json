@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "@notionhq/client": "^2.2.15",
-    "electron-store": "^10.0.0"
+    "electron-store": "^10.0.0",
+    "fuse.js": "^7.0.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "3.7.3",
