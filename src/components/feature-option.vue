@@ -17,7 +17,6 @@
 </template>
 
 <script setup lang="ts">
-import { useElementHover } from '@vueuse/core'
 import { computed, onUnmounted, ref, useId } from 'vue'
 import { useFeatureStore } from '../stores/feature.store'
 
@@ -46,10 +45,7 @@ onUnmounted(() => {
 })
 
 const optionRef = ref<HTMLDivElement>()
-const isHover = useElementHover(optionRef)
-const selected = computed(
-  () => isHover.value || featureStore.selectedOptionId === id,
-)
+const selected = computed(() => featureStore.selectedOptionId === id)
 </script>
 
 <style scoped lang="sass">
