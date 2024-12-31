@@ -17,6 +17,7 @@
 </template>
 
 <script setup lang="ts">
+import { useElementBounding } from '@vueuse/core'
 import { computed, onUnmounted, ref, useId } from 'vue'
 import { useFeatureStore } from '../stores/feature.store'
 
@@ -36,15 +37,17 @@ defineSlots<{
 const featureStore = useFeatureStore()
 
 const id = useId()
+const optionRef = ref<HTMLDivElement>()
+const { y } = useElementBounding(optionRef)
 
 featureStore.addOption(id, {
+  y: y.value,
   action: props.action,
 })
 onUnmounted(() => {
   featureStore.removeOption(id)
 })
 
-const optionRef = ref<HTMLDivElement>()
 const selected = computed(() => featureStore.selectedOptionId === id)
 </script>
 

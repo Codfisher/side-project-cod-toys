@@ -9,55 +9,50 @@
     />
 
     <template v-else>
-      <div
-        :key="pagination.page"
-        class="flex-col"
+      <feature-option
+        v-if="nextPageVisible"
+        class="w-full px-4 py-2"
+        :action="() => nextPage()"
       >
-        <feature-option
-          v-if="nextPageVisible"
-          class="w-full px-4 py-2"
-          :action="() => nextPage()"
-        >
+        <span class="flex-1">
+          下一頁 ({{ pagination.page + 1 }}/{{ totalPages }})
+        </span>
+      </feature-option>
+
+      <feature-option
+        v-for="item, i in paginationList"
+        :key="i"
+        class="w-full px-4 py-2"
+        :action="() => copy(item.value)"
+      >
+        <div class="flex-1">
+          {{ item.value }}
+        </div>
+
+        <div class="flex">
+          <q-chip
+            v-for="tag in item.tags"
+            :key="tag"
+            :label="tag"
+          />
+        </div>
+      </feature-option>
+
+      <feature-option
+        class="relative w-full bg-primary/10 p-4"
+        :action="() => refreshData()"
+      >
+        <div class="w-full flex items-center justify-around">
           <span class="flex-1">
-            下一頁 ({{ pagination.page + 1 }}/{{ totalPages }})
+            更新資料
           </span>
-        </feature-option>
+          <span class="flex-1 text-right text-xs text-gray-500">
+            共 {{ list.length }} 筆，最後更新於 {{ updatedAt.format('YYYY/MM/DD HH:mm:ss') }}
+          </span>
+        </div>
 
-        <feature-option
-          v-for="item, i in paginationList"
-          :key="i"
-          class="w-full px-4 py-2"
-          :action="() => copy(item.value)"
-        >
-          <div class="flex-1">
-            {{ item.value }}
-          </div>
-
-          <div class="flex">
-            <q-chip
-              v-for="tag in item.tags"
-              :key="tag"
-              :label="tag"
-            />
-          </div>
-        </feature-option>
-
-        <feature-option
-          class="relative w-full bg-primary/10 p-4"
-          :action="() => refreshData()"
-        >
-          <div class="w-full flex items-center justify-around">
-            <span class="flex-1">
-              更新資料
-            </span>
-            <span class="flex-1 text-right text-xs text-gray-500">
-              共 {{ list.length }} 筆，最後更新於 {{ updatedAt.format('YYYY/MM/DD HH:mm:ss') }}
-            </span>
-          </div>
-
-          <q-inner-loading :showing="isDataLoading" />
-        </feature-option>
-      </div>
+        <q-inner-loading :showing="isDataLoading" />
+      </feature-option>
     </template>
   </template>
 </template>
