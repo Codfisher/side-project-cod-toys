@@ -1,11 +1,5 @@
 <template>
-  <q-layout view="hHh LpR fFf">
-    <q-page-container>
-      <q-page class="flex-col">
-        <router-view />
-      </q-page>
-    </q-page-container>
-  </q-layout>
+  <router-view />
 </template>
 
 <script setup lang="ts">
@@ -24,6 +18,7 @@ html, body, #app
   height: 100%
   padding: 0
   margin: 0
+  overflow: hidden
 
 #app
   display: flex
