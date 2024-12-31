@@ -187,11 +187,6 @@ watch(list, (value) => {
   fuseInstance.setCollection(value)
 })
 
-// const filteredList = computed(() => pipe(
-//   list.value,
-//   take(5),
-// ))
-
 const filteredList = computed(() => {
   if (inputText.value === '@') {
     return list.value
