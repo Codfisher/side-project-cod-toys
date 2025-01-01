@@ -111,7 +111,9 @@ export function useKaomojiData(
       return list.value
     }
 
-    const result = fuseInstance.search(inputText.value)
+    const result = fuseInstance.search(
+      inputText.value.slice(1),
+    )
 
     return pipe(
       result,
