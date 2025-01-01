@@ -40,16 +40,12 @@ const id = useId()
 const optionRef = ref<HTMLDivElement>()
 const { y } = useElementBounding(optionRef)
 
-featureStore.addOption(id, {
-  y: y.value,
-  action: props.action,
-})
-watch(y, (value) => {
+watch(() => [props, y.value], () => {
   featureStore.addOption(id, {
-    y: value,
+    y: y.value,
     action: props.action,
   })
-})
+}, { deep: true })
 onUnmounted(() => {
   featureStore.removeOption(id)
 })

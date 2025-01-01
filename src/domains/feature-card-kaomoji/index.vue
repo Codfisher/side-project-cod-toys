@@ -34,7 +34,7 @@
       >
         <q-chip
           v-if="isFeature"
-          :label="`Ctrl+${i + 2}`"
+          :label="`Ctrl+${i + textStartIndex}`"
           square
           outline
           color="primary"
@@ -113,6 +113,8 @@ const {
 init()
 
 const nextPageVisible = computed(() => totalPages.value > 1)
+
+const textStartIndex = computed(() => nextPageVisible.value ? 2 : 1)
 
 const { current } = useMagicKeys()
 
