@@ -135,6 +135,10 @@ export function useKaomojiData(
     page: 0,
     itemsPerPage: 5,
   })
+  watch(inputText, () => {
+    pagination.value.page = 0
+  })
+
   const totalPages = computed(() => Math.ceil(
     filteredList.value.length / pagination.value.itemsPerPage,
   ))
