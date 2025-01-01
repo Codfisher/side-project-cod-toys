@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { useElementBounding } from '@vueuse/core'
-import { computed, onUnmounted, ref, useId } from 'vue'
+import { computed, onUnmounted, ref, useId, watch } from 'vue'
 import { useFeatureStore } from '../stores/feature.store'
 
 interface Props {
@@ -43,6 +43,12 @@ const { y } = useElementBounding(optionRef)
 featureStore.addOption(id, {
   y: y.value,
   action: props.action,
+})
+watch(y, (value) => {
+  featureStore.addOption(id, {
+    y: value,
+    action: props.action,
+  })
 })
 onUnmounted(() => {
   featureStore.removeOption(id)
