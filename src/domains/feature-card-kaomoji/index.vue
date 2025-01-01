@@ -11,7 +11,7 @@
     <template v-else>
       <feature-option
         v-if="nextPageVisible"
-        class="w-full px-4 py-2"
+        class="w-full px-4 py-1"
         :action="() => nextPage()"
       >
         <q-chip
