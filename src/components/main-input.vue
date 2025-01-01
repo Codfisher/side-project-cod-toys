@@ -26,10 +26,7 @@ const mainApi = useMainApi()
 whenever(
   () => featureStore.optionIdList.length === 1,
   () => {
-    const target = featureStore.optionIdList[0]
-    if (target) {
-      featureStore.setOption(target)
-    }
+    featureStore.setOptionByIndex(0)
   },
   { deep: true },
 )

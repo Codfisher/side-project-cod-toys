@@ -29,6 +29,9 @@ export const useFeatureStore = defineStore('feature', () => {
   function setOption(id: string) {
     selectedOptionId.value = id
   }
+  function setOptionByIndex(index: number) {
+    selectedOptionId.value = optionIdList.value[index] ?? ''
+  }
   function nextOption() {
     const first = optionIdList.value.at(0)
 
@@ -67,6 +70,7 @@ export const useFeatureStore = defineStore('feature', () => {
 
     selectedOptionId,
     setOption,
+    setOptionByIndex,
     nextOption,
     prevOption,
 
