@@ -1,17 +1,27 @@
 {
-  "name": "vite-vue3-quasar2",
+  "name": "cod-toys",
   "version": "0.1.0",
+  "author": {
+    "name": "Cod Lin",
+    "url": "https://codlin.me",
+    "email": "hi@codlin.me"
+  },
+  "main": "dist-electron/main.js",
   "scripts": {
     "gcp-build": "",
     "dev": "vite --host",
     "build": "vue-tsc --noEmit --skipLibCheck && vite build",
-    "build:stage": "vue-tsc --noEmit --skipLibCheck && vite build --mode staging",
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "blueprint": "vite-node scripts/create-blueprint.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.(ts|vue)\" --fix"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.2.15",
+    "electron-store": "^10.0.0",
+    "fuse.js": "^7.0.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "3.7.3",
@@ -39,8 +49,10 @@
     "@vueuse/router": "~11.1.0",
     "autoprefixer": "^10.4.20",
     "await-to-js": "^3.0.0",
+    "concurrently": "^9.1.0",
     "dayjs": "~1.11.13",
     "decimal.js": "~10.4.3",
+    "electron": "^33.2.1",
     "esbuild": "^0.24.0",
     "eslint": "^9.11.1",
     "eslint-plugin-unicorn": "56.0.0",
@@ -62,6 +74,8 @@
     "unplugin-vue-router": "0.10.8",
     "vite": "^5.4.8",
     "vite-node": "2.1.2",
+    "vite-plugin-electron": "^0.29.0",
+    "vite-plugin-electron-renderer": "^0.14.6",
     "vite-plugin-vue-devtools": "^7.4.6",
     "vitest": "^2.1.2",
     "vue": "^3.5.11",

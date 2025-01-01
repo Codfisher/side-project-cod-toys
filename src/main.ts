@@ -15,7 +15,7 @@ import {
 
 import iconSet from 'quasar/icon-set/material-symbols-rounded'
 import quasarLang from 'quasar/lang/zh-TW'
-import { createRouter, createWebHistory } from 'vue-router/auto'
+import { createRouter, createWebHashHistory } from 'vue-router/auto'
 
 import { routes } from 'vue-router/auto-routes'
 
@@ -38,7 +38,7 @@ import './style/global.sass'
 dayjs.locale('zh-tw')
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
 })
 

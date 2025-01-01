@@ -21,6 +21,8 @@
     "esModuleInterop": true
   },
   "include": [
+    "electron/**/*.ts",
+    "electron/**/*.d.ts",
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
