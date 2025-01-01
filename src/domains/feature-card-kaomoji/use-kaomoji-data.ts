@@ -111,9 +111,19 @@ export function useKaomojiData(
       return list.value
     }
 
-    const result = fuseInstance.search(
-      inputText.value.slice(1),
+    const text = pipe(
+      inputText.value,
+      (value) => {
+        if (value.startsWith('@')) {
+          return value.slice(1)
+        }
+
+        return value
+      },
+      (value) => value.trim(),
     )
+
+    const result = fuseInstance.search(text)
 
     return pipe(
       result,
