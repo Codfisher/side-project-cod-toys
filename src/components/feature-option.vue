@@ -17,8 +17,8 @@
 </template>
 
 <script setup lang="ts">
-import { useElementHover } from '@vueuse/core'
-import { computed, onUnmounted, ref, useId } from 'vue'
+import { useElementBounding } from '@vueuse/core'
+import { computed, onUnmounted, ref, useId, watch } from 'vue'
 import { useFeatureStore } from '../stores/feature.store'
 
 interface Props {
@@ -37,19 +37,20 @@ defineSlots<{
 const featureStore = useFeatureStore()
 
 const id = useId()
+const optionRef = ref<HTMLDivElement>()
+const { y } = useElementBounding(optionRef)
 
-featureStore.addOption(id, {
-  action: props.action,
-})
+watch(() => [props, y.value], () => {
+  featureStore.addOption(id, {
+    y: y.value,
+    action: props.action,
+  })
+}, { deep: true })
 onUnmounted(() => {
   featureStore.removeOption(id)
 })
 
-const optionRef = ref<HTMLDivElement>()
-const isHover = useElementHover(optionRef)
-const selected = computed(
-  () => isHover.value || featureStore.selectedOptionId === id,
-)
+const selected = computed(() => featureStore.selectedOptionId === id)
 </script>
 
 <style scoped lang="sass">
