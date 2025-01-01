@@ -29,7 +29,7 @@
       <feature-option
         v-for="item, i in paginationList"
         :key="i"
-        class="w-full px-4 py-2"
+        class="w-full px-4 py-1"
         :action="() => copy(item.value)"
       >
         <q-chip
