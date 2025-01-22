@@ -1,7 +1,7 @@
 import type { UserConfig } from './electron-env'
 import { contextBridge, ipcRenderer } from 'electron'
 
-contextBridge.exposeInMainWorld('main', {
+export const mainApi = {
   updateHeight(height: number) {
     return ipcRenderer.send('main:updateHeight', height)
   },
@@ -11,9 +11,10 @@ contextBridge.exposeInMainWorld('main', {
   openExternal(url: string) {
     return ipcRenderer.send('main:openExternal', url)
   },
-})
+}
+contextBridge.exposeInMainWorld('main', mainApi)
 
-contextBridge.exposeInMainWorld('config', {
+export const configApi = {
   get() {
     return ipcRenderer.invoke('config:get')
   },
@@ -25,4 +26,5 @@ contextBridge.exposeInMainWorld('config', {
       callback(config)
     })
   },
-})
+}
+contextBridge.exposeInMainWorld('config', configApi)
