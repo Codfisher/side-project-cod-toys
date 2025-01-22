@@ -1,4 +1,4 @@
-import type { configApi, mainApi } from './preload'
+import type { configApi, llmApi, mainApi } from './preload'
 
 export interface UserConfig {
   kaomoji: {
@@ -11,6 +11,7 @@ declare global {
   interface Window {
     main: typeof mainApi;
     config: typeof configApi;
+    llm: typeof llmApi;
   }
 }
 

@@ -28,3 +28,10 @@ export const configApi = {
   },
 }
 contextBridge.exposeInMainWorld('config', configApi)
+
+export const llmApi = {
+  prompt(message: string): Promise<string> {
+    return ipcRenderer.invoke('llm:prompt', message)
+  },
+}
+contextBridge.exposeInMainWorld('llm', llmApi)

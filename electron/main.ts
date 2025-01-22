@@ -148,6 +148,11 @@ function initIpcMain(
       window.webContents.send('config:onUpdate', config)
     })
   })
+
+  // llm
+  ipcMain.handle('llm:prompt', async (event, message: string) => {
+    //
+  })
 }
 
 function createConfigStore(): ConfigStore {
