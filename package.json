@@ -8,7 +8,6 @@
   },
   "main": "dist-electron/main.js",
   "scripts": {
-    "gcp-build": "",
     "dev": "vite --host",
     "build": "vue-tsc --noEmit --skipLibCheck && vite build",
     "preview": "vite preview",
@@ -16,7 +15,9 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "blueprint": "vite-node scripts/create-blueprint.ts",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.(ts|vue)\" --fix"
+    "lint": "eslint \"{src,apps,libs,test}/**/*.(ts|vue)\" --fix",
+    "postinstall": "npm run models:pull",
+    "models:pull": "node-llama-cpp pull --dir ./resources/models \"hf:bartowski/gemma-2-2b-it-GGUF/gemma-2-2b-it-Q6_K_L.gguf\""
   },
   "dependencies": {
     "@notionhq/client": "^2.2.15",
