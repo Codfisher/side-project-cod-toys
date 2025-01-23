@@ -13,9 +13,16 @@ import {
   Tray,
 } from 'electron'
 import Store from 'electron-store'
+import { getLlama, LlamaChatSession, resolveModelFile } from 'node-llama-cpp'
 import { version } from '../package.json'
 
 type ConfigStore = Store<{ config: UserConfig }>
+
+const isDev = process.env.NODE_ENV !== 'production'
+
+const modelsDirectory = isDev
+  ? path.join(__dirname, '../resources/models')
+  : path.join(app.getAppPath(), 'resources/models')
 
 async function createInputWindow() {
   const display = screen.getPrimaryDisplay()
@@ -109,7 +116,7 @@ function initGlobalShortcut(
   }
 }
 
-function initIpcMain(
+async function initIpcMain(
   {
     configStore,
   }: {
@@ -150,8 +157,21 @@ function initIpcMain(
   })
 
   // llm
+  const modelPath = await resolveModelFile(
+    'hf_bartowski_gemma-2-2b-it-Q6_K_L.gguf',
+    modelsDirectory,
+  )
+  const llama = await getLlama()
+  const model = await llama.loadModel({ modelPath })
+  const context = await model.createContext()
+
   ipcMain.handle('llm:prompt', async (event, message: string) => {
-    //
+    const session = new LlamaChatSession({
+      contextSequence: context.getSequence(),
+    })
+    const answer = await session.prompt(message)
+    session.dispose()
+    return answer
   })
 }
 
@@ -224,7 +244,7 @@ app.whenReady().then(async () => {
 
   initGlobalShortcut({ mainWindow })
 
-  initIpcMain({ configStore })
+  await initIpcMain({ configStore })
 
   const tray = createTray({ mainWindow })
 
