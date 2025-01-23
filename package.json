@@ -23,7 +23,8 @@
     "@notionhq/client": "^2.2.15",
     "electron-store": "^10.0.0",
     "fuse.js": "^7.0.0",
-    "node-llama-cpp": "^3.4.0"
+    "node-llama-cpp": "^3.4.0",
+    "p-queue": "^8.1.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "3.7.3",

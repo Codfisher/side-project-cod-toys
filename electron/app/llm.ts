@@ -1,3 +1,4 @@
+import type { LlamaChatSession } from 'node-llama-cpp'
 import type { ConfigStore } from '../electron-env'
 import path from 'node:path'
 import process from 'node:process'
@@ -36,13 +37,20 @@ export async function initLlmIpc(
   const llama = await getLlama()
   const model = await llama.loadModel({ modelPath })
   const context = await model.createContext()
+
+  let session: LlamaChatSession | undefined
   ipcMain.handle('llm:prompt', async (event, message: string) => {
-    const session = new LlamaChatSession({
+    if (session) {
+      session.dispose({ disposeSequence: true })
+    }
+
+    session = new LlamaChatSession({
       contextSequence: context.getSequence(),
     })
 
     const answer = await session.prompt(message)
-    session.dispose()
+    session.dispose({ disposeSequence: true })
+    session = undefined
 
     return answer
   })
