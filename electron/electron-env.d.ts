@@ -1,8 +1,5 @@
-export interface MainApi {
-  updateHeight: (height: number) => void;
-  hideWindow: () => void;
-  openExternal: (url: string) => void;
-}
+import type Store from 'electron-store'
+import type { configApi, llmApi, mainApi } from './preload'
 
 export interface UserConfig {
   kaomoji: {
@@ -10,16 +7,14 @@ export interface UserConfig {
     token: string;
   };
 }
-export interface ConfigApi {
-  get: () => Promise<UserConfig>;
-  update: (data: Partial<UserConfig>) => Promise<void>;
-  onUpdate: (callback: (config: UserConfig) => void) => void;
-}
+
+export type ConfigStore = Store<{ config: UserConfig }>
 
 declare global {
   interface Window {
-    main: MainApi;
-    config: ConfigApi;
+    main: typeof mainApi;
+    config: typeof configApi;
+    llm: typeof llmApi;
   }
 }
 

@@ -4,14 +4,17 @@ import { useAsyncState } from '@vueuse/core'
 import dayjs from 'dayjs'
 import Fuse from 'fuse.js'
 import { get } from 'lodash-es'
-import { chunk, map, pipe, prop, reduce } from 'remeda'
+import PQueue from 'p-queue'
+import { chunk, flatMap, forEach, join, map, pipe, prop, reduce, unique } from 'remeda'
 import { computed, nextTick, ref, type Ref, shallowRef, triggerRef, watch } from 'vue'
 import { useConfigApi } from '../../composables/use-config-api'
+import { useLlmApi } from '../../composables/use-llm-api'
 import { useFeatureStore } from '../../stores/feature.store'
 
 export function useKaomojiData(
   inputText: Ref<string>,
 ) {
+  const llmApi = useLlmApi()
   const configApi = useConfigApi()
   const featureStore = useFeatureStore()
 
@@ -99,16 +102,57 @@ export function useKaomojiData(
     }, []),
   ))
 
-  const fuseInstance = new Fuse(list.value, {
-    keys: ['tags'],
+  const tagSynonymMap = shallowRef(new Map<string, string>())
+  const tagSynonymQueue = new PQueue({
+    concurrency: 1,
+    timeout: 1000 * 60 * 5,
   })
-  watch(list, (value) => {
+  watch(list, () => {
+    tagSynonymQueue.clear()
+
+    pipe(
+      list.value,
+      flatMap((item) => item.tags),
+      unique(),
+      forEach((tag) => {
+        tagSynonymQueue.add(async () => {
+          const synonym = await llmApi.prompt(
+            `${tag}的 5 個繁體中文近義詞，5 個英文近義詞，全部合併，逗號分隔，不要任何附加資訊，不要標題，不需解釋`,
+          )
+          tagSynonymMap.value.set(tag, synonym)
+          triggerRef(tagSynonymMap)
+        })
+      }),
+    )
+  })
+
+  const listWithSynonym = computed(() => pipe(
+    list.value,
+    map((item) => {
+      /** 全部拼在一起即可 */
+      const synonym = pipe(
+        item.tags,
+        map((tag) => tagSynonymMap.value.get(tag) ?? ''),
+        join(','),
+      )
+
+      return {
+        ...item,
+        synonym,
+      }
+    }),
+  ))
+
+  const fuseInstance = new Fuse(listWithSynonym.value, {
+    keys: ['tags', 'synonym'],
+  })
+  watch(listWithSynonym, (value) => {
     fuseInstance.setCollection(value)
   })
 
   const filteredList = computed(() => {
     if (inputText.value === '@') {
-      return list.value
+      return listWithSynonym.value
     }
 
     const text = pipe(
