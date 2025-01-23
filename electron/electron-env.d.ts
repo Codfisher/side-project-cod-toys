@@ -1,3 +1,4 @@
+import type Store from 'electron-store'
 import type { configApi, llmApi, mainApi } from './preload'
 
 export interface UserConfig {
@@ -6,6 +7,8 @@ export interface UserConfig {
     token: string;
   };
 }
+
+export type ConfigStore = Store<{ config: UserConfig }>
 
 declare global {
   interface Window {
