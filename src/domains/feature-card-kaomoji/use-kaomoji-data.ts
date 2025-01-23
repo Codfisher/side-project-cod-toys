@@ -109,9 +109,7 @@ export function useKaomojiData(
   })
   watch(list, piped(
     // 先清空 tagSynonymQueue
-    tap(() => {
-      tagSynonymQueue.clear()
-    }),
+    tap(() => tagSynonymQueue.clear()),
     flatMap((item) => item.tags),
     unique(),
     forEach((tag) => {
