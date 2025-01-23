@@ -44,11 +44,18 @@
           {{ item.value }}
         </div>
 
-        <div class="flex">
+        <div class="flex items-end">
           <q-chip
             v-for="tag in item.tags"
             :key="tag"
             :label="tag"
+          />
+
+          <q-icon
+            v-if="item.synonym"
+            color="gray"
+            name="task_alt"
+            size="1rem"
           />
         </div>
       </feature-option>
