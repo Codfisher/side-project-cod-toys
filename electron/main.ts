@@ -156,23 +156,28 @@ async function initIpcMain(
   })
 
   // llm
-  /** 直接 import 會出現 Error [ERR_REQUIRE_ESM]: require() of ES Module 錯誤 */
+  /** 直接 import 會出現 Error [ERR_REQUIRE_ESM]: require() of ES Module 錯誤
+   *
+   * https://node-llama-cpp.withcat.ai/guide/troubleshooting#using-in-commonjs
+   */
   const { getLlama, LlamaChatSession, resolveModelFile } = await import('node-llama-cpp')
 
   const modelPath = await resolveModelFile(
     'hf_bartowski_gemma-2-2b-it-Q6_K_L.gguf',
     modelsDirectory,
   )
+
   const llama = await getLlama()
   const model = await llama.loadModel({ modelPath })
   const context = await model.createContext()
-
   ipcMain.handle('llm:prompt', async (event, message: string) => {
     const session = new LlamaChatSession({
       contextSequence: context.getSequence(),
     })
+
     const answer = await session.prompt(message)
     session.dispose()
+
     return answer
   })
 }
@@ -240,14 +245,12 @@ function createTray(
 }
 
 app.whenReady().then(async () => {
-  const mainWindow = await createInputWindow()
-
   const configStore = createConfigStore()
-
-  initGlobalShortcut({ mainWindow })
-
   await initIpcMain({ configStore })
 
+  const mainWindow = await createInputWindow()
+
+  initGlobalShortcut({ mainWindow })
   const tray = createTray({ mainWindow })
 
   app.on('window-all-closed', () => {
