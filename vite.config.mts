@@ -11,6 +11,9 @@ export default defineConfig(({ command, mode }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
 
   return {
+    optimizeDeps: {
+      exclude: ['node-llama-cpp'],
+    },
     css: {
       preprocessorOptions: {
         sass: {
