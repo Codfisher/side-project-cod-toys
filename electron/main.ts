@@ -156,7 +156,10 @@ async function initIpcMain(
   })
 
   // llm
-  /** 直接 import 會出現 Error [ERR_REQUIRE_ESM]: require() of ES Module 錯誤
+  /**
+   * node-llama-cpp 只支援 ESM
+   *
+   * 直接 import 會出現 Error [ERR_REQUIRE_ESM]: require() of ES Module 錯誤
    *
    * https://node-llama-cpp.withcat.ai/guide/troubleshooting#using-in-commonjs
    */
