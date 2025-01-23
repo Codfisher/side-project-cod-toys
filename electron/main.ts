@@ -13,7 +13,6 @@ import {
   Tray,
 } from 'electron'
 import Store from 'electron-store'
-import { getLlama, LlamaChatSession, resolveModelFile } from 'node-llama-cpp'
 import { version } from '../package.json'
 
 type ConfigStore = Store<{ config: UserConfig }>
@@ -157,6 +156,9 @@ async function initIpcMain(
   })
 
   // llm
+  /** 直接 import 會出現 Error [ERR_REQUIRE_ESM]: require() of ES Module 錯誤 */
+  const { getLlama, LlamaChatSession, resolveModelFile } = await import('node-llama-cpp')
+
   const modelPath = await resolveModelFile(
     'hf_bartowski_gemma-2-2b-it-Q6_K_L.gguf',
     modelsDirectory,

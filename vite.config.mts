@@ -11,9 +11,6 @@ export default defineConfig(({ command, mode }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
 
   return {
-    optimizeDeps: {
-      exclude: ['node-llama-cpp'],
-    },
     css: {
       preprocessorOptions: {
         sass: {
@@ -40,6 +37,20 @@ export default defineConfig(({ command, mode }) => {
       electron({
         main: {
           entry: 'electron/main.ts',
+          vite: {
+            build: {
+              rollupOptions: {
+                external: [
+                  'node-llama-cpp',
+                ],
+              },
+            },
+            optimizeDeps: {
+              exclude: [
+                'node-llama-cpp',
+              ],
+            },
+          },
         },
         preload: {
           input: 'electron/preload.ts',
